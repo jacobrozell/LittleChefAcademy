@@ -74,10 +74,25 @@ heardSelect?.addEventListener("change", syncHeardOther);
 // reset() doesn't fire "change", so re-sync after the form clears.
 form?.addEventListener("reset", () => setTimeout(syncHeardOther));
 
-function setStatus(message, isError) {
+// kind: true or "error" for problems, "success" when it went through.
+function setStatus(message, kind) {
   if (!statusEl) return;
-  statusEl.classList.toggle("error", Boolean(isError));
+  statusEl.classList.toggle("error", kind === true || kind === "error");
+  statusEl.classList.toggle("success", kind === "success");
   statusEl.textContent = message;
+  // Restart the little fade-in each time the message changes.
+  statusEl.classList.remove("is-visible");
+  if (message) {
+    void statusEl.offsetWidth;
+    statusEl.classList.add("is-visible");
+  }
+}
+
+function setBusy(busy) {
+  if (!submitBtn) return;
+  submitBtn.disabled = busy;
+  if (busy) submitBtn.setAttribute("aria-busy", "true");
+  else submitBtn.removeAttribute("aria-busy");
 }
 
 function clip(value, max) {
@@ -143,12 +158,12 @@ form?.addEventListener("submit", async (event) => {
   }
 
   if (!cfg.web3formsKey) {
-    setStatus("Saved on this preview — it does not email Mac yet. The live form will.");
+    setStatus("Saved on this preview — it does not email Mac yet. The live form will.", "success");
     form.reset();
     return;
   }
 
-  if (submitBtn) submitBtn.disabled = true;
+  setBusy(true);
   setStatus("Sending…");
 
   const controller = new AbortController();
@@ -172,11 +187,91 @@ form?.addEventListener("submit", async (event) => {
     if (!response.ok || result.success === false) throw new Error("Send failed");
 
     form.reset();
-    setStatus("Sent. Mac will email you back.");
+    setStatus("Sent. Mac will email you back.", "success");
   } catch {
     setStatus(failMessage(), true);
   } finally {
     clearTimeout(timer);
-    if (submitBtn) submitBtn.disabled = false;
+    setBusy(false);
   }
 });
+
+// ---------- Scroll polish ----------
+
+const header = document.querySelector(".site-header");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function syncHeaderShadow() {
+  header?.classList.toggle("is-scrolled", window.scrollY > 8);
+}
+syncHeaderShadow();
+window.addEventListener("scroll", syncHeaderShadow, { passive: true });
+
+// Mark the nav link for whichever section is in the middle of the screen.
+const navLinks = [...document.querySelectorAll('.nav a[href^="#"], .mobile-nav a[href^="#"]')];
+const spyTargets = [...new Set(["#top", ...navLinks.map((a) => a.getAttribute("href"))])]
+  .map((id) => document.querySelector(id))
+  .filter(Boolean);
+
+if ("IntersectionObserver" in window && spyTargets.length) {
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = `#${entry.target.id}`;
+        navLinks.forEach((a) => {
+          if (a.getAttribute("href") === id) a.setAttribute("aria-current", "location");
+          else a.removeAttribute("aria-current");
+        });
+      });
+    },
+    { rootMargin: "-45% 0px -50% 0px" },
+  );
+  spyTargets.forEach((el) => spy.observe(el));
+}
+
+// Fade sections up as they arrive. Skipped for reduced motion or old browsers,
+// so content is never hidden without this script.
+const REVEAL_SELECTOR = [
+  ".steps-grid > article",
+  ".about-grid > *",
+  ".classes .eyebrow",
+  ".classes h2",
+  ".card",
+  ".reviews .eyebrow",
+  ".reviews h2",
+  ".reviews .section-lead",
+  ".recipe-card",
+  ".photos .eyebrow",
+  ".photos h2",
+  ".photos .section-lead",
+  ".gallery figure",
+  ".signup-grid > *",
+].join(", ");
+
+if (!reduceMotion && "IntersectionObserver" in window) {
+  const revealer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        revealer.unobserve(el);
+        el.classList.add("is-visible");
+        // Drop the reveal classes afterwards so hover effects use their own timing.
+        const delay = parseInt(el.style.getPropertyValue("--reveal-delay"), 10) || 0;
+        setTimeout(() => {
+          el.classList.remove("reveal", "is-visible");
+          el.style.removeProperty("--reveal-delay");
+        }, delay + 700);
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+  );
+
+  document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+    const index = [...el.parentElement.children].indexOf(el);
+    el.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 70}ms`);
+    el.classList.add("reveal");
+    revealer.observe(el);
+  });
+}

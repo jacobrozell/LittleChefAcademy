@@ -173,7 +173,21 @@ button:focus-visible {
   background: transparent;
   border: 1.5px solid var(--ink);
   border-radius: 999px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.35rem 0.95rem;
+  min-height: 2.5rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+
+.menu-toggle:hover,
+.menu-toggle[aria-expanded="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.menu-toggle:active {
+  transform: scale(0.96);
 }
 
 .mobile-nav {
@@ -190,8 +204,24 @@ button:focus-visible {
 .mobile-nav a {
   text-decoration: none;
   font-weight: 600;
-  padding: 0.45rem 0;
+  /* ~44px tall: comfortable thumb target. */
+  padding: 0.65rem 0.5rem;
+  margin-inline: -0.5rem;
   border-bottom: 1px solid var(--line);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a:focus-visible {
+  background: color-mix(in srgb, var(--tomato) 10%, transparent);
+  color: var(--tomato);
+  padding-left: 0.85rem;
+}
+
+.mobile-nav a:active {
+  background: color-mix(in srgb, var(--tomato) 18%, transparent);
 }
 
 .btn {
@@ -242,7 +272,7 @@ button:focus-visible {
 }
 
 .hero {
-  padding: 2.5rem 0 3.5rem;
+  padding: clamp(1.75rem, 4vw, 2.5rem) 0 clamp(2.5rem, 6vw, 3.5rem);
 }
 
 .hero-grid {
@@ -292,6 +322,10 @@ button:focus-visible {
   grid-template-columns: 1fr 1fr;
   gap: 0.85rem;
   align-items: start;
+  /* Keep the photo stack from taking over the screen on big phones. */
+  width: 100%;
+  max-width: 23rem;
+  margin-inline: auto;
 }
 
 .polaroid {
@@ -326,7 +360,7 @@ button:focus-visible {
 
 .polaroid-c {
   grid-column: 1 / -1;
-  width: min(70%, 260px);
+  width: min(54%, 220px);
   justify-self: center;
   rotate: -1.5deg;
   margin-top: -0.5rem;
@@ -343,7 +377,7 @@ button:focus-visible {
 .photos,
 .signup,
 .steps {
-  padding: 4.5rem 0;
+  padding: clamp(3rem, 8vw, 4.5rem) 0;
 }
 
 .steps {
@@ -442,6 +476,10 @@ button:focus-visible {
 .recipe-card {
   background: #fffdf8;
   box-shadow: var(--shadow);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .recipe-card p {
@@ -513,7 +551,7 @@ button:focus-visible {
   background: color-mix(in srgb, #fff8ef 8%, transparent);
   border: 1px solid rgba(255, 248, 239, 0.14);
   border-radius: 1.4rem;
-  padding: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.75rem);
 }
 
 .signup-form .btn {
@@ -636,15 +674,98 @@ html[data-preview="false"] .preview-only {
 .site-footer a {
   color: inherit;
   font-weight: 700;
+  display: inline-block;
+  padding-block: 0.3rem;
 }
 
 .privacy-copy {
   max-width: 40rem;
 }
 
+/* ---------- Large phones and tablets (520–799px) ----------
+   Still the one-column phone flow, but use the extra width instead of
+   stretching single cards and photos edge to edge. */
+@media (min-width: 520px) and (max-width: 799px) {
+  .hero-photos {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 38rem;
+  }
+
+  .polaroid-b {
+    margin-top: 1.4rem;
+  }
+
+  .polaroid-c {
+    grid-column: auto;
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 0.4rem;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 799px) {
+  .steps-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .steps h2 {
+    font-size: 1.3rem;
+  }
+
+  .cards,
+  .review-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* An odd card out spans the full row instead of leaving a hole. */
+  .cards > :last-child:nth-child(odd),
+  .review-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gallery figure:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+
+  .gallery figure:first-child img {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .gallery figure:nth-child(4) {
+    grid-column: span 1;
+    aspect-ratio: auto;
+  }
+
+  .gallery figure:nth-child(4) img {
+    aspect-ratio: 1;
+  }
+}
+
 @media (min-width: 800px) {
   .nav {
     display: flex;
+  }
+
+  .hero-photos {
+    max-width: none;
+    margin-inline: 0;
   }
 
   .menu-toggle,
@@ -740,17 +861,351 @@ html[data-preview="false"] .preview-only {
   }
 }
 
+/* ---------- Polish: hover, focus and motion ---------- */
+
+::selection {
+  background: var(--butter);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+@keyframes polaroid-in {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+    scale: 0.95;
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Header picks up a soft shadow once the page scrolls (class set in main.js). */
+.site-header {
+  transition: box-shadow 0.25s ease;
+}
+
+.site-header.is-scrolled {
+  box-shadow: 0 8px 24px rgba(36, 28, 22, 0.08);
+}
+
+/* Logo seal gives a little wobble on hover. */
+.seal {
+  transition: rotate 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.wordmark:hover .seal {
+  rotate: -14deg;
+}
+
+/* Desktop nav: underline grows from the left; current section stays marked. */
+.nav a:not(.btn) {
+  position: relative;
+  padding-block: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.nav a:not(.btn)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.22s ease;
+}
+
+.nav a:not(.btn):hover::after,
+.nav a[aria-current]::after {
+  scale: 1 1;
+}
+
+.nav a[aria-current],
+.mobile-nav a[aria-current] {
+  color: var(--tomato);
+}
+
+/* Mobile menu slides down, links follow one after another. */
+.mobile-nav:not([hidden]) {
+  animation: menu-in 0.22s ease-out;
+}
+
+.mobile-nav:not([hidden]) a {
+  animation: menu-in 0.28s ease-out backwards;
+}
+
+.mobile-nav a:nth-child(2) {
+  animation-delay: 30ms;
+}
+
+.mobile-nav a:nth-child(3) {
+  animation-delay: 60ms;
+}
+
+.mobile-nav a:nth-child(4) {
+  animation-delay: 90ms;
+}
+
+.mobile-nav a:nth-child(5) {
+  animation-delay: 120ms;
+}
+
+/* Buttons: warmer on hover, spinner while sending. */
+.btn {
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+}
+
+.btn:hover {
+  background: #c4432b;
+}
+
+.btn[disabled] {
+  cursor: progress;
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 var(--tomato-dark);
+}
+
+.btn[aria-busy="true"]::after {
+  content: "";
+  width: 0.95em;
+  height: 0.95em;
+  margin-left: 0.6em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Text links: underline drifts down and warms up. */
+.text-link,
+.fine-print a,
+.site-footer a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  transition: color 0.15s ease, text-underline-offset 0.15s ease;
+}
+
+.text-link:hover {
+  color: var(--tomato);
+  text-underline-offset: 0.38em;
+}
+
+.fine-print a:hover,
+.site-footer a:hover {
+  color: var(--butter);
+  text-underline-offset: 0.38em;
+}
+
+/* Hero: copy rises in, polaroids drop onto the table. */
+.hero-copy > * {
+  animation: rise 0.6s ease-out backwards;
+}
+
+.hero-copy > :nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.hero-copy > :nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.hero-copy > :nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.hero-copy > :nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.polaroid {
+  animation: polaroid-in 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  transition: rotate 0.3s ease, scale 0.3s ease, box-shadow 0.3s ease;
+}
+
+.polaroid-a {
+  animation-delay: 0.15s;
+}
+
+.polaroid-b {
+  animation-delay: 0.27s;
+}
+
+.polaroid-c {
+  animation-delay: 0.39s;
+}
+
+/* Review cards sit a little crooked, like recipe cards on a fridge. */
+.recipe-card {
+  transition: rotate 0.25s ease, translate 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card {
+  transition: translate 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card-num {
+  transition: letter-spacing 0.2s ease;
+}
+
+.gallery figure {
+  transition: box-shadow 0.3s ease;
+}
+
+@media (min-width: 800px) {
+  .review-grid .recipe-card:nth-child(3n + 1) {
+    rotate: -1deg;
+  }
+
+  .review-grid .recipe-card:nth-child(3n + 2) {
+    rotate: 0.8deg;
+    translate: 0 0.5rem;
+  }
+
+  .review-grid .recipe-card:nth-child(3n) {
+    rotate: -0.4deg;
+  }
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -4px;
+    box-shadow: var(--shadow);
+    border-color: rgba(180, 58, 36, 0.25);
+  }
+
+  .card:hover .card-num {
+    letter-spacing: 0.24em;
+  }
+
+  .review-grid .recipe-card:hover {
+    rotate: 0deg;
+    translate: 0 -4px;
+    box-shadow: 0 24px 50px rgba(36, 28, 22, 0.16);
+  }
+
+  .gallery figure:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .field input:hover,
+  .field textarea:hover,
+  .field select:hover {
+    box-shadow: 0 0 0 3px rgba(227, 178, 60, 0.3);
+  }
+}
+
+@media (hover: hover) and (min-width: 800px) {
+  .polaroid:hover {
+    rotate: 0deg;
+    scale: 1.05;
+    z-index: 4;
+    box-shadow: 0 26px 50px rgba(36, 28, 22, 0.22);
+  }
+}
+
+/* Form: labels light up with their field, bad entries get a soft red ring
+   (only after the parent has touched the field). */
+.field input,
+.field textarea,
+.field select {
+  transition: box-shadow 0.15s ease;
+}
+
+.field label {
+  transition: color 0.15s ease;
+}
+
+.field:focus-within > label {
+  color: var(--butter);
+}
+
+.field input:user-invalid,
+.field textarea:user-invalid {
+  box-shadow: 0 0 0 2px #ffb4a3;
+}
+
+.form-status.is-visible {
+  animation: rise 0.25s ease-out;
+}
+
+.form-status.success {
+  color: #cfe8c9;
+}
+
+/* Sections fade up as they scroll in. main.js adds .reveal only when JS runs
+   and the visitor hasn't asked for reduced motion, so nothing is ever hidden
+   without it. */
+.reveal {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 0.6s ease, translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  translate: none;
+}
+
+@media print {
+  .reveal {
+    opacity: 1;
+    translate: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  .btn,
-  .gallery img {
-    transition: none;
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 
+  .menu-toggle:active,
   .gallery figure:hover img {
     transform: none;
+  }
+
+  .card:hover,
+  .review-grid .recipe-card:hover,
+  .polaroid:hover {
+    translate: none;
+    scale: none;
   }
 }
