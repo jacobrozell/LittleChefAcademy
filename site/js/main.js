@@ -5,6 +5,8 @@ const form = document.querySelector("#signup-form");
 const statusEl = document.querySelector("#form-status");
 const submitBtn = form?.querySelector('button[type="submit"]');
 const heardSelect = form?.querySelector('[name="heard_about"]');
+const heardOtherField = document.querySelector("#heard-other-field");
+const heardOtherInput = heardOtherField?.querySelector("input");
 
 const LIMITS = {
   parent_name: 80,
@@ -13,6 +15,7 @@ const LIMITS = {
   kid_name: 40,
   kid_age: 2,
   heard_about: 60,
+  heard_about_other: 80,
   message: 1000,
 };
 
@@ -59,6 +62,18 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+// "Other" reveals an optional write-in box.
+function syncHeardOther() {
+  if (!heardOtherField || !heardSelect) return;
+  const show = heardSelect.value === "Other";
+  heardOtherField.hidden = !show;
+  if (!show && heardOtherInput) heardOtherInput.value = "";
+}
+
+heardSelect?.addEventListener("change", syncHeardOther);
+// reset() doesn't fire "change", so re-sync after the form clears.
+form?.addEventListener("reset", () => setTimeout(syncHeardOther));
+
 function setStatus(message, isError) {
   if (!statusEl) return;
   statusEl.classList.toggle("error", Boolean(isError));
@@ -96,14 +111,18 @@ form?.addEventListener("submit", async (event) => {
   }
 
   const raw = Object.fromEntries(new FormData(form));
-  const heard = clip(raw.heard_about, LIMITS.heard_about);
+  const heardChoice = clip(raw.heard_about, LIMITS.heard_about);
+  let heard = HEARD_OPTIONS.has(heardChoice) ? heardChoice : "";
+  const heardOther = clip(raw.heard_about_other, LIMITS.heard_about_other);
+  if (heard === "Other" && heardOther) heard = `Other: ${heardOther}`;
+
   const payload = {
     parent_name: clip(raw.parent_name, LIMITS.parent_name),
     email: clip(raw.email, LIMITS.email).toLowerCase(),
     phone: clip(raw.phone, LIMITS.phone),
     kid_name: clip(raw.kid_name, LIMITS.kid_name),
     kid_age: clip(raw.kid_age, LIMITS.kid_age),
-    heard_about: HEARD_OPTIONS.has(heard) ? heard : "",
+    heard_about: heard,
     message: clip(raw.message, LIMITS.message),
   };
 

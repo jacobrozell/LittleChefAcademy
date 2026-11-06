@@ -151,7 +151,7 @@ Keep it short so parents actually send it:
 | Email | yes |
 | Phone | no |
 | Kid first name / age | yes |
-| How did you hear about Mac? (dropdown) | no |
+| How did you hear about Mac? (dropdown; “Other” reveals a write-in, sent as `Other: …`) | no |
 | Message / what they’re looking for | no |
 
 Confirmation: “Thanks — he’ll email you.” No account, no auto-reply sequence required.
