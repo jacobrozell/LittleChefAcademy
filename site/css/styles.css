@@ -34,13 +34,39 @@
   box-sizing: border-box;
 }
 
+/* `hidden` always wins. Without this, any rule that sets display (grid,
+   inline-block…) quietly un-hides the element; that's what kept the mobile
+   menu open and left a gap before "Privacy" in the footer. */
+[hidden] {
+  display: none !important;
+}
+
+/* Read by screen readers, invisible on screen. */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 html {
+  /* Our own press states replace the grey flash iOS adds on tap. */
+  -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
 }
 
 body {
   margin: 0;
+  /* Fill the screen even on short pages, so the background never repeats
+     into a lighter band at the bottom. */
+  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--ink);
   font-family: var(--sans);
   background:
@@ -406,7 +432,7 @@ button:focus-visible {
   gap: 1.5rem;
 }
 
-.steps h2 {
+.steps h3 {
   font-size: 1.55rem;
   margin-bottom: 0.35rem;
 }
@@ -678,7 +704,17 @@ html[data-preview="false"] .preview-only {
 }
 
 .page-narrow {
-  padding: 5rem 0;
+  padding: clamp(3rem, 8vw, 5rem) 0;
+}
+
+/* Short pages (privacy, 404): footer pinned to the bottom of the screen. */
+.simple-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.simple-page main {
+  flex: 1 0 auto;
 }
 
 .fine-print {
@@ -734,7 +770,7 @@ html[data-preview="false"] .preview-only {
     gap: 1.25rem;
   }
 
-  .steps h2 {
+  .steps h3 {
     font-size: 1.3rem;
   }
 
@@ -749,28 +785,45 @@ html[data-preview="false"] .preview-only {
     grid-column: 1 / -1;
   }
 
+}
+
+/* ---------- Gallery mosaic, tablet and up (600px+) ----------
+   3 columns with fixed row heights so every tile lines up. The first photo
+   is a 2×2 feature tile. With 6 photos that's exactly 3 full rows. For other
+   counts the last photo stretches to close the gap, so 4–10 photos from Mac
+   all end on a clean edge. */
+@media (min-width: 600px) {
   .gallery {
     grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: clamp(150px, 21vw, 250px);
+  }
+
+  .gallery figure,
+  .gallery figure:first-child,
+  .gallery figure:nth-child(4) {
+    grid-column: auto;
+    grid-row: auto;
+    aspect-ratio: auto;
   }
 
   .gallery figure:first-child {
     grid-column: span 2;
     grid-row: span 2;
-    aspect-ratio: auto;
   }
 
-  .gallery figure:first-child img {
+  .gallery figure:last-child:nth-child(3n + 1):not(:first-child) {
+    grid-column: 1 / -1;
+  }
+
+  .gallery figure:last-child:nth-child(3n + 2) {
+    grid-column: span 2;
+  }
+
+  .gallery img,
+  .gallery figure:first-child img,
+  .gallery figure:nth-child(4) img {
     aspect-ratio: auto;
     height: 100%;
-  }
-
-  .gallery figure:nth-child(4) {
-    grid-column: span 1;
-    aspect-ratio: auto;
-  }
-
-  .gallery figure:nth-child(4) img {
-    aspect-ratio: 1;
   }
 }
 
@@ -803,25 +856,7 @@ html[data-preview="false"] .preview-only {
   }
 
   .gallery {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .gallery figure:first-child {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .gallery figure:first-child img {
-    aspect-ratio: auto;
-    height: 100%;
-  }
-
-  .gallery figure:nth-child(4) {
-    grid-column: span 1;
-  }
-
-  .gallery figure:nth-child(4) img {
-    aspect-ratio: 1;
+    gap: 1.1rem;
   }
 
   .hero-photos {
@@ -963,13 +998,19 @@ li {
 }
 
 .nav a:not(.btn):hover::after,
-.nav a[aria-current]::after {
+.nav a:not(.btn)[aria-current]::after {
   scale: 1 1;
 }
 
-.nav a[aria-current],
+/* Text links turn tomato when current. The Sign up button is already tomato,
+   so it gets a soft ring instead; turning its text tomato made it vanish. */
+.nav a:not(.btn)[aria-current],
 .mobile-nav a[aria-current] {
   color: var(--tomato);
+}
+
+.nav .btn[aria-current] {
+  box-shadow: 0 4px 0 var(--tomato-dark), 0 0 0 3px rgba(180, 58, 36, 0.22);
 }
 
 /* Mobile menu slides down, links follow one after another. */
@@ -1198,6 +1239,75 @@ img.img-fade {
 
 img.img-fade.is-loaded {
   opacity: 1;
+}
+
+/* Dot-separated tags ("Pennsylvania · Kids cooking · …"). Each tag wraps as a
+   whole. Every tag carries its dot in front, and the row is shifted left by
+   one dot-width with the overflow clipped, so the dot that would start a new
+   line is hidden. No dangling dots at either end of a line. */
+.tags {
+  overflow: hidden;
+}
+
+.tags-inner {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -1.4em;
+}
+
+.tags-inner > span {
+  white-space: nowrap;
+}
+
+.tags-inner > span::before {
+  content: "·";
+  content: "·" / ""; /* decorative: screen readers skip it (where supported) */
+  display: inline-block;
+  width: 1.4em;
+  text-align: center;
+}
+
+/* Reviews on phones: a swipeable row (the next card peeks in) instead of a
+   long stack, which matters once Mac has 4–6 real reviews. */
+@media (max-width: 599px) {
+  .review-grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+    margin-inline: -1rem;
+    padding: 0.5rem 1rem 1.75rem;
+    scrollbar-width: none;
+  }
+
+  .review-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review-grid .recipe-card {
+    scroll-snap-align: start;
+  }
+
+  .recipe-card p {
+    font-size: 1.2rem;
+  }
+}
+
+.review-grid:focus-visible {
+  outline: 2px solid var(--butter);
+  outline-offset: 4px;
+  border-radius: 1rem;
+}
+
+/* Small header for the privacy and 404 pages. */
+.simple-header {
+  border-bottom: 1px solid var(--line);
+}
+
+.simple-header .header-inner {
+  min-height: 4rem;
 }
 
 /* Sections fade up as they scroll in. main.js adds .reveal only when JS runs

@@ -67,6 +67,7 @@ Local preview: `python3 -m http.server 5173 --directory site` → http://127.0.0
 - [ ] **Share image:** point `og:image` and the structured-data `image` at a real class photo (an absolute URL; JPEG is safest for link previews).
 - [ ] **Reviews:** replace the sample quotes and delete the "sample" labels and the section's placeholder sentence.
 - [ ] **Copy:** bio, ages, class length, town in the about and classes sections. Delete every "Still needed from Mac" note and the Unsplash credit in the footer. The `preview-only` class hides them, but delete them anyway.
+- [ ] **Copy cleanup while you're in there:** "he writes back / follows up himself" appears three times (hero trust line, step 02, class card 03). Give card 03 something about the classes instead, once Mac says what they cook. Also rewrite "Mac started Mac's Little Chefs Academy…" to avoid saying the name twice.
 - [ ] Optional: trust line ("Clearances ✓ Insured ✓"), and "Birthday parties" / "For schools & groups" sections if he offers them ($50 content updates, §9).
 
 Check phone and desktop widths. Do **not** set `preview: false` yet.
