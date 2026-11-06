@@ -230,8 +230,10 @@ if ("IntersectionObserver" in window && spyTargets.length) {
   spyTargets.forEach((el) => spy.observe(el));
 }
 
-// Fade sections up as they arrive. Skipped for reduced motion or old browsers,
-// so content is never hidden without this script.
+// Fade content up as it arrives. Skipped for reduced motion or old browsers,
+// so content is never hidden without this script. The signup form is left
+// out on purpose: it's the page's main action and should be ready the
+// instant someone taps "Sign up".
 const REVEAL_SELECTOR = [
   ".steps-grid > article",
   ".about-grid > *",
@@ -246,32 +248,105 @@ const REVEAL_SELECTOR = [
   ".photos h2",
   ".photos .section-lead",
   ".gallery figure",
-  ".signup-grid > *",
 ].join(", ");
+
+const STAGGER_MS = 40; // matches --stagger in styles.css
+const MAX_STAGGER_STEPS = 4; // cap the wait so the last item isn't late
+const REVEAL_MS = 400; // matches --dur-slow
+
+function finishReveal(el) {
+  el.classList.add("is-visible");
+  // Drop the reveal classes afterwards so hover effects use their own timing.
+  const delay = parseInt(el.style.getPropertyValue("--reveal-delay"), 10) || 0;
+  setTimeout(() => {
+    el.classList.remove("reveal", "is-visible");
+    el.style.removeProperty("--reveal-delay");
+  }, delay + REVEAL_MS + 50);
+}
 
 if (!reduceMotion && "IntersectionObserver" in window) {
   const revealer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        const el = entry.target;
-        revealer.unobserve(el);
-        el.classList.add("is-visible");
-        // Drop the reveal classes afterwards so hover effects use their own timing.
-        const delay = parseInt(el.style.getPropertyValue("--reveal-delay"), 10) || 0;
-        setTimeout(() => {
-          el.classList.remove("reveal", "is-visible");
-          el.style.removeProperty("--reveal-delay");
-        }, delay + 700);
+        revealer.unobserve(entry.target);
+        finishReveal(entry.target);
       });
     },
-    { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+    { threshold: 0.1, rootMargin: "0px 0px -5% 0px" },
   );
 
   document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
     const index = [...el.parentElement.children].indexOf(el);
-    el.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 70}ms`);
+    el.style.setProperty("--reveal-delay", `${Math.min(index, MAX_STAGGER_STEPS) * STAGGER_MS}ms`);
     el.classList.add("reveal");
     revealer.observe(el);
   });
+
+  // Jumping to a section from the nav: show it straight away instead of
+  // making people wait for the fade after the scroll.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    const target = link && document.querySelector(link.getAttribute("href"));
+    if (!target) return;
+    target.querySelectorAll(".reveal:not(.is-visible)").forEach((el) => {
+      el.style.setProperty("--reveal-delay", "0ms");
+      revealer.unobserve(el);
+      finishReveal(el);
+    });
+  });
 }
+
+// ---------- Photos ----------
+
+// Fade photos in once they've downloaded. Already-cached photos skip this
+// and appear immediately.
+document.querySelectorAll(".polaroid img, .gallery img").forEach((img) => {
+  if (img.complete && img.naturalWidth) return;
+  img.classList.add("img-fade");
+  const done = () => {
+    img.classList.add("is-loaded");
+    setTimeout(() => img.classList.remove("img-fade", "is-loaded"), 300);
+  };
+  img.addEventListener("load", done, { once: true });
+  img.addEventListener("error", done, { once: true });
+});
+
+// Preload the gallery: once the first screen has finished loading, quietly
+// fetch the lazy photos so they're ready before anyone scrolls down. The
+// whole set is a few hundred KB, so this costs little and avoids pop-in.
+function preloadLazyImages() {
+  document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+    img.loading = "eager";
+  });
+}
+
+function whenIdle(fn) {
+  if ("requestIdleCallback" in window) window.requestIdleCallback(fn, { timeout: 2000 });
+  else setTimeout(fn, 200);
+}
+
+const saveData = navigator.connection && navigator.connection.saveData;
+if (!saveData) {
+  if (document.readyState === "complete") whenIdle(preloadLazyImages);
+  else window.addEventListener("load", () => whenIdle(preloadLazyImages), { once: true });
+}
+
+// ---------- Form ----------
+
+// Warm up the connection to the form service as soon as a parent starts
+// typing, so pressing "Send" doesn't also wait for DNS + TLS. Only done on
+// interaction, so visitors who never touch the form never contact it.
+let formWarmed = false;
+form?.addEventListener(
+  "focusin",
+  () => {
+    if (formWarmed || !cfg.web3formsKey) return;
+    formWarmed = true;
+    const hint = document.createElement("link");
+    hint.rel = "preconnect";
+    hint.href = "https://api.web3forms.com";
+    hint.crossOrigin = "anonymous";
+    document.head.appendChild(hint);
+  },
+);

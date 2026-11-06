@@ -152,7 +152,7 @@ Typical jobs:
 
 | Ask | What to do | Time |
 |---|---|---|
-| New photos | Replace files in `site/images/`, fix `index.html` `src` | 15–30 min |
+| New photos | Drop originals in `site/images/`, run `scripts/optimize-images.sh <file>` (makes `-640.webp` / `-1280.webp`), then update that `<img>`'s `src`, `srcset` (use the real widths it prints), `width`/`height`. Hero photos keep `fetchpriority="high"`; gallery photos keep `loading="lazy"`. | 15–30 min |
 | New review | Edit the reviews block in `index.html` | 10 min |
 | Copy / hours / town | Edit the about / classes sections | 10–20 min |
 | Logo tweak | Swap header + `favicon.svg` | 15 min |

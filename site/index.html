@@ -128,16 +128,32 @@
             </ul>
           </div>
           <div class="hero-photos" aria-hidden="true">
+            <!-- Above the fold: load first (fetchpriority), never lazy. -->
             <figure class="polaroid polaroid-a">
-              <img src="images/produce.jpg" alt="" />
+              <img
+                src="images/produce-640.webp"
+                srcset="images/produce-640.webp 640w, images/produce-1280.webp 1280w"
+                sizes="(min-width: 800px) 270px, 200px"
+                width="640" height="640" alt="" fetchpriority="high" decoding="async"
+              />
               <figcaption>Fresh first</figcaption>
             </figure>
             <figure class="polaroid polaroid-b">
-              <img src="images/cooking.jpg" alt="" />
+              <img
+                src="images/cooking-640.webp"
+                srcset="images/cooking-640.webp 640w, images/cooking-1280.webp 1280w"
+                sizes="(min-width: 800px) 270px, 200px"
+                width="640" height="480" alt="" fetchpriority="high" decoding="async"
+              />
               <figcaption>Hands on</figcaption>
             </figure>
             <figure class="polaroid polaroid-c">
-              <img src="images/spread.jpg" alt="" />
+              <img
+                src="images/spread-640.webp"
+                srcset="images/spread-640.webp 640w, images/spread-1280.webp 1200w"
+                sizes="(min-width: 800px) 240px, 200px"
+                width="640" height="436" alt="" fetchpriority="high" decoding="async"
+              />
               <figcaption>Then we eat</figcaption>
             </figure>
           </div>
@@ -255,24 +271,58 @@
             Stand-in food shots until Mac sends 6–10 pictures from class. No
             faces required — cutting boards and little hands work.
           </p>
+          <!-- Below the fold: lazy, then main.js fetches the rest in the
+               background once the page has finished loading. Each srcset
+               lists the WebP copies from scripts/optimize-images.sh; sizes
+               tells the browser how wide the tile is at each breakpoint. -->
           <div class="gallery">
             <figure>
-              <img src="images/veg.jpg" alt="Colorful vegetables on a table" loading="lazy" />
+              <img
+                src="images/veg-640.webp"
+                srcset="images/veg-640.webp 640w, images/veg-1280.webp 1200w"
+                sizes="(min-width: 1152px) 560px, (min-width: 800px) 50vw, (min-width: 600px) 66vw, 100vw"
+                width="640" height="968" alt="Colorful vegetables on a table" loading="lazy" decoding="async"
+              />
             </figure>
             <figure>
-              <img src="images/salad.jpg" alt="A bright composed salad" loading="lazy" />
+              <img
+                src="images/salad-640.webp"
+                srcset="images/salad-640.webp 640w, images/salad-1280.webp 1200w"
+                sizes="(min-width: 1152px) 280px, (min-width: 800px) 25vw, (min-width: 600px) 33vw, 50vw"
+                width="640" height="427" alt="A bright composed salad" loading="lazy" decoding="async"
+              />
             </figure>
             <figure>
-              <img src="images/pasta.jpg" alt="Herb pasta on a plate" loading="lazy" />
+              <img
+                src="images/pasta-640.webp"
+                srcset="images/pasta-640.webp 640w, images/pasta-1280.webp 1200w"
+                sizes="(min-width: 1152px) 280px, (min-width: 800px) 25vw, (min-width: 600px) 33vw, 50vw"
+                width="640" height="428" alt="Herb pasta on a plate" loading="lazy" decoding="async"
+              />
             </figure>
             <figure>
-              <img src="images/table.jpg" alt="A spread of cooked dishes" loading="lazy" />
+              <img
+                src="images/table-640.webp"
+                srcset="images/table-640.webp 640w, images/table-1280.webp 1200w"
+                sizes="(min-width: 1152px) 280px, (min-width: 800px) 25vw, (min-width: 600px) 33vw, 100vw"
+                width="640" height="427" alt="A spread of cooked dishes" loading="lazy" decoding="async"
+              />
             </figure>
             <figure>
-              <img src="images/produce.jpg" alt="Fresh produce arranged for cooking" loading="lazy" />
+              <img
+                src="images/produce-640.webp"
+                srcset="images/produce-640.webp 640w, images/produce-1280.webp 1280w"
+                sizes="(min-width: 1152px) 280px, (min-width: 800px) 25vw, (min-width: 600px) 33vw, 50vw"
+                width="640" height="640" alt="Fresh produce arranged for cooking" loading="lazy" decoding="async"
+              />
             </figure>
             <figure>
-              <img src="images/cooking.jpg" alt="Someone cooking at a stove" loading="lazy" />
+              <img
+                src="images/cooking-640.webp"
+                srcset="images/cooking-640.webp 640w, images/cooking-1280.webp 1280w"
+                sizes="(min-width: 1152px) 280px, (min-width: 800px) 25vw, (min-width: 600px) 33vw, 50vw"
+                width="640" height="480" alt="Someone cooking at a stove" loading="lazy" decoding="async"
+              />
             </figure>
           </div>
         </div>

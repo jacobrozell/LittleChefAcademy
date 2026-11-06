@@ -14,6 +14,18 @@
   --serif: "Fraunces", Georgia, serif;
   --sans: "Figtree", "Segoe UI", sans-serif;
   --wrap: 1120px;
+
+  /* Motion tokens. Durations follow common design-system ranges:
+     press ~100ms, hover ~150ms, small UI ~250ms, entrances ~400ms.
+     Ease-out (fast start, gentle stop) for things arriving. */
+  --dur-press: 100ms;
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --stagger: 40ms;
+  --rise: 12px;
 }
 
 *,
@@ -44,6 +56,7 @@ body {
 
 img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -177,7 +190,8 @@ button:focus-visible {
   min-height: 2.5rem;
   color: var(--ink);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
 }
 
 .menu-toggle:hover,
@@ -210,7 +224,8 @@ button:focus-visible {
   border-bottom: 1px solid var(--line);
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    padding-left var(--dur-fast) var(--ease-out);
 }
 
 .mobile-nav a:hover,
@@ -238,7 +253,7 @@ button:focus-visible {
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 8px 0 var(--tomato-dark);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out);
 }
 
 .btn:hover {
@@ -337,6 +352,7 @@ button:focus-visible {
 }
 
 .polaroid img {
+  width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
 }
@@ -518,7 +534,7 @@ button:focus-visible {
   height: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  transition: transform 0.45s ease;
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
 .gallery figure:hover img {
@@ -882,15 +898,15 @@ li {
 @keyframes rise {
   from {
     opacity: 0;
-    translate: 0 12px;
+    translate: 0 var(--rise);
   }
 }
 
 @keyframes polaroid-in {
   from {
     opacity: 0;
-    translate: 0 28px;
-    scale: 0.95;
+    translate: 0 20px;
+    scale: 0.96;
   }
 }
 
@@ -909,7 +925,7 @@ li {
 
 /* Header picks up a soft shadow once the page scrolls (class set in main.js). */
 .site-header {
-  transition: box-shadow 0.25s ease;
+  transition: box-shadow var(--dur-base) var(--ease-out);
 }
 
 .site-header.is-scrolled {
@@ -918,7 +934,7 @@ li {
 
 /* Logo seal gives a little wobble on hover. */
 .seal {
-  transition: rotate 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+  transition: rotate var(--dur-slow) var(--ease-spring);
 }
 
 .wordmark:hover .seal {
@@ -929,7 +945,7 @@ li {
 .nav a:not(.btn) {
   position: relative;
   padding-block: 0.25rem;
-  transition: color 0.15s ease;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .nav a:not(.btn)::after {
@@ -943,7 +959,7 @@ li {
   background: currentColor;
   scale: 0 1;
   transform-origin: left;
-  transition: scale 0.22s ease;
+  transition: scale var(--dur-base) var(--ease-out);
 }
 
 .nav a:not(.btn):hover::after,
@@ -958,11 +974,11 @@ li {
 
 /* Mobile menu slides down, links follow one after another. */
 .mobile-nav:not([hidden]) {
-  animation: menu-in 0.22s ease-out;
+  animation: menu-in var(--dur-base) var(--ease-out);
 }
 
 .mobile-nav:not([hidden]) a {
-  animation: menu-in 0.28s ease-out backwards;
+  animation: menu-in var(--dur-base) var(--ease-out) backwards;
 }
 
 .mobile-nav a:nth-child(2) {
@@ -983,7 +999,8 @@ li {
 
 /* Buttons: warmer on hover, spinner while sending. */
 .btn {
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
 }
 
 .btn:hover {
@@ -1013,7 +1030,7 @@ li {
 .site-footer a {
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
-  transition: color 0.15s ease, text-underline-offset 0.15s ease;
+  transition: color var(--dur-fast) var(--ease-out), text-underline-offset var(--dur-fast) var(--ease-out);
 }
 
 .text-link:hover {
@@ -1029,57 +1046,60 @@ li {
 
 /* Hero: copy rises in, polaroids drop onto the table. */
 .hero-copy > * {
-  animation: rise 0.6s ease-out backwards;
+  animation: rise var(--dur-slow) var(--ease-out) backwards;
 }
 
 .hero-copy > :nth-child(2) {
-  animation-delay: 60ms;
+  animation-delay: calc(var(--stagger) * 1);
 }
 
 .hero-copy > :nth-child(3) {
-  animation-delay: 120ms;
+  animation-delay: calc(var(--stagger) * 2);
 }
 
 .hero-copy > :nth-child(4) {
-  animation-delay: 180ms;
+  animation-delay: calc(var(--stagger) * 3);
 }
 
 .hero-copy > :nth-child(5) {
-  animation-delay: 240ms;
+  animation-delay: calc(var(--stagger) * 4);
 }
 
 .polaroid {
-  animation: polaroid-in 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-  transition: rotate 0.3s ease, scale 0.3s ease, box-shadow 0.3s ease;
+  animation: polaroid-in 500ms var(--ease-out) backwards;
+  transition: rotate var(--dur-base) var(--ease-out), scale var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .polaroid-a {
-  animation-delay: 0.15s;
+  animation-delay: 80ms;
 }
 
 .polaroid-b {
-  animation-delay: 0.27s;
+  animation-delay: 140ms;
 }
 
 .polaroid-c {
-  animation-delay: 0.39s;
+  animation-delay: 200ms;
 }
 
 /* Review cards sit a little crooked, like recipe cards on a fridge. */
 .recipe-card {
-  transition: rotate 0.25s ease, translate 0.25s ease, box-shadow 0.25s ease;
+  transition: rotate var(--dur-base) var(--ease-out), translate var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .card {
-  transition: translate 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: translate var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
 }
 
 .card-num {
-  transition: letter-spacing 0.2s ease;
+  transition: letter-spacing var(--dur-base) var(--ease-out);
 }
 
 .gallery figure {
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow var(--dur-base) var(--ease-out);
 }
 
 @media (min-width: 800px) {
@@ -1139,11 +1159,11 @@ li {
 .field input,
 .field textarea,
 .field select {
-  transition: box-shadow 0.15s ease;
+  transition: box-shadow var(--dur-fast) var(--ease-out);
 }
 
 .field label {
-  transition: color 0.15s ease;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .field:focus-within > label {
@@ -1156,11 +1176,28 @@ li {
 }
 
 .form-status.is-visible {
-  animation: rise 0.25s ease-out;
+  animation: rise var(--dur-base) var(--ease-out);
 }
 
 .form-status.success {
   color: #cfe8c9;
+}
+
+/* Photos: a warm placeholder holds the space while a photo downloads, then
+   the photo fades in. main.js only adds .img-fade to photos that are still
+   loading, so cached photos show instantly and nothing hides without JS. */
+.polaroid img,
+.gallery img {
+  background: #e4d8c4;
+}
+
+img.img-fade {
+  opacity: 0;
+  transition: opacity var(--dur-base) linear;
+}
+
+img.img-fade.is-loaded {
+  opacity: 1;
 }
 
 /* Sections fade up as they scroll in. main.js adds .reveal only when JS runs
@@ -1168,8 +1205,8 @@ li {
    without it. */
 .reveal {
   opacity: 0;
-  translate: 0 18px;
-  transition: opacity 0.6s ease, translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  translate: 0 var(--rise);
+  transition: opacity var(--dur-base) linear, translate var(--dur-slow) var(--ease-out);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
