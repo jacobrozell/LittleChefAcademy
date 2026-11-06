@@ -2,7 +2,9 @@
 
 One-page site for kids cooking / nutrition classes. Public brand is **Mac's Little Chefs Academy**, under **McKelvey's Nutrition Services** LLC.
 
-**Preview:** https://jacobrozell.github.io/MacsLittleChefsAcademy/
+**Preview:** https://jacobrozell.github.io/LittleChefAcademy/
+
+GitHub repo is [`jacobrozell/LittleChefAcademy`](https://github.com/jacobrozell/LittleChefAcademy) (folder name stays `MacsLittleChefsAcademy`).
 
 Photos and reviews are placeholders. The form does not email Mac yet.
 

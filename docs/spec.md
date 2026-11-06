@@ -2,7 +2,8 @@
 
 **Status:** preview on GitHub Pages  
 **Last updated:** 2026-11-06  
-**Preview:** https://jacobrozell.github.io/MacsLittleChefsAcademy/  
+**Preview:** https://jacobrozell.github.io/LittleChefAcademy/  
+**GitHub:** [`jacobrozell/LittleChefAcademy`](https://github.com/jacobrozell/LittleChefAcademy)  
 **Working folder:** `~/Desktop/personal/sites/MacsLittleChefsAcademy`  
 **Public brand:** Mac's Little Chefs Academy  
 **Legal entity:** McKelvey's Nutrition Services LLC
@@ -238,3 +239,4 @@ He can swap a photo after he moves without texting Jacob. Hosting, SSL, and form
 | 2026-11-06 | Public brand: Mac's Little Chefs Academy. LLC: McKelvey's Nutrition Services. Folder renamed to `sites/MacsLittleChefsAcademy`. Site leads with the academy; LLC in the footer. |
 | 2026-11-06 | Start building a custom static one-pager in `site/` (Mac's branding). Can ship this or use it as the Squarespace layout. Form waits on a Web3Forms key + his email. |
 | 2026-11-06 | Polish + host preview on jacobrozell GitHub Pages. Public URL for Mac to look at. Spec stays out of the published `site/` folder. |
+| 2026-11-06 | GitHub repo is `jacobrozell/LittleChefAcademy`. Pages URL: https://jacobrozell.github.io/LittleChefAcademy/ |
