@@ -39,10 +39,9 @@ If you private the GitHub repo **before** Cloudflare is serving the site, the pr
 1. Cloudflare dashboard → Workers & Pages → Create → connect `jacobrozell/LittleChefAcademy`.
 2. Build: empty / none. Output directory: `site`. Production branch: `main`.
 3. Confirm `*.pages.dev` shows the brochure (not the spec).
-4. Custom domain later: `macslittlechef.com` (default) once Mac confirms. DNS: CF zone or CNAME from Squarespace/Google Domains to the pages.dev target.
-5. Paste Web3Forms + analytics tokens in `site/js/config.js`, set `preview: false`, push.
-6. **Then** make the GitHub repo private.
-7. Delete or disable the GitHub Pages environment / `.github/workflows/pages.yml`.
+4. **Then** make the GitHub repo private. This doesn't need to wait for launch: `pages.dev` becomes the preview link (runbook §0, §7).
+5. Delete or disable the GitHub Pages environment / `.github/workflows/pages.yml`.
+6. Later, at launch: custom domain `macslittlechef.com` (runbook §5; careful with his email records), keys in `config.js`, `preview: false` (runbook §6).
 
 Cloudflare’s GitHub App should be limited to this one private repo, not all of jacobrozell.
 
