@@ -307,6 +307,8 @@ A line he can hear: **about $500–$1,000 and 1–2 weeks**, then ~$20/month (or
 | 2026-11-06 | Client handoff: `docs/handoff-for-mac.md` — non-technical, product + long-term + price. Send that, not the runbook. |
 | 2026-11-06 | Marketing: `docs/marketing-plan.md` + `docs/ai-guide.md` (both shareable with Mac). Form gains optional “How did you hear about Mac?” dropdown for attribution. LocalBusiness JSON-LD added; town/contact filled at launch. |
 | 2026-11-06 | Audit: CSPs aligned + least privilege (meta and `_headers` are both enforced), `object-src 'none'`, HSTS without `preload`. Fixed mobile menu never hiding (`.mobile-nav` display beat `[hidden]`). Indexing flip moved from JS to a manual launch step (runbook §6). `contactEmail` config for footer + error fallback. |
+| 2026-11-06 | Security audit: `docs/security.md`. Biggest risks are the public repo, account 2FA (Squarespace also runs Mac’s Google mail) and no DMARC on the domain. Don’t take Mac’s password; use contributor access. |
+| 2026-11-06 | Form verified end to end from localhost with Jacob’s test Web3Forms key (kept in memory only, never committed): Web3Forms returned success and the email arrived. Mac’s own key goes in `config.js` at launch. |
 
 ---
 

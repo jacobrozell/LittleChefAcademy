@@ -35,7 +35,7 @@ To get it live:
 1. The logo you made
 2. The email you want signups sent to
 3. Yes on macslittlechef.com, or a different name if you'd rather
-4. Help pointing that address at this site. You can add me on the account you bought it with, send a login for a day, or I walk you through two settings
+4. Help pointing that address at this site. Either add me as a contributor on the account you bought it with, or I walk you through two settings. Please don't send me your password; that account also controls your email.
 
 Makes it look like *your* class (fine if this comes later):
 

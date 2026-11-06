@@ -23,7 +23,7 @@ Need before a real launch. Logo + email + domain yes/no are the blockers. Photos
 - [ ] Logo file (promised)
 - [ ] Email for signups (the inbox the form hits)
 - [ ] Confirm URL: keep **macslittlechef.com** (default) or buy something else
-- [ ] Squarespace / Google Domains access so DNS can move: add Jacob as developer, send login, or he changes records himself
+- [ ] Squarespace / Google Domains access so DNS can move: add Jacob as a contributor, or he changes records himself while Jacob walks him through it. **Don’t take his password.** The domain also runs his Google email (MX/SPF are live), so that login can take over his inbox. See [security.md](security.md).
 
 **Launch-quality, can follow a week later**
 

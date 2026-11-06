@@ -209,8 +209,16 @@ window.addEventListener("scroll", syncHeaderShadow, { passive: true });
 
 // Mark the nav link for whichever section is in the middle of the screen.
 const navLinks = [...document.querySelectorAll('.nav a[href^="#"], .mobile-nav a[href^="#"]')];
+// Look up "#section" links by id. getElementById never throws, unlike
+// querySelector, which errors on hrefs like "#" or "#1-thing".
+function hashTarget(href) {
+  return href && href.length > 1 && href[0] === "#"
+    ? document.getElementById(decodeURIComponent(href.slice(1)))
+    : null;
+}
+
 const spyTargets = [...new Set(["#top", ...navLinks.map((a) => a.getAttribute("href"))])]
-  .map((id) => document.querySelector(id))
+  .map(hashTarget)
   .filter(Boolean);
 
 if ("IntersectionObserver" in window && spyTargets.length) {
@@ -287,7 +295,7 @@ if (!reduceMotion && "IntersectionObserver" in window) {
   // making people wait for the fade after the scroll.
   document.addEventListener("click", (event) => {
     const link = event.target.closest('a[href^="#"]');
-    const target = link && document.querySelector(link.getAttribute("href"));
+    const target = link && hashTarget(link.getAttribute("href"));
     if (!target) return;
     target.querySelectorAll(".reveal:not(.is-visible)").forEach((el) => {
       el.style.setProperty("--reveal-delay", "0ms");

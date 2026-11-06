@@ -14,5 +14,6 @@ For agents, read in this order:
 3. [hosting.md](hosting.md) — why Cloudflare Pages, not GitHub Pages
 4. [prod.md](prod.md) — security, analytics, logging, config flags
 5. [scaling.md](scaling.md) — 500 signups/mo, form spam, AI DDoS; build only when a trigger fires
+6. [security.md](security.md) — audit 2026-11-06: public repo, account 2FA, DMARC, before-launch checklist
 
 Parent [AGENTS.md](../AGENTS.md) is the short trap list.
