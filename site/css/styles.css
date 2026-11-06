@@ -73,6 +73,12 @@ a {
   color: inherit;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--butter);
+  outline-offset: 3px;
+}
+
 .skip {
   position: absolute;
   left: 0.75rem;
@@ -174,6 +180,11 @@ a {
   display: grid;
   gap: 0.35rem;
   padding: 0 1rem 1rem;
+}
+
+/* `display: grid` above would otherwise override the hidden attribute. */
+.mobile-nav[hidden] {
+  display: none;
 }
 
 .mobile-nav a {
@@ -530,17 +541,35 @@ a {
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.field select {
   font: inherit;
   color: var(--ink);
   background: var(--paper);
   border: 0;
   border-radius: 0.7rem;
   padding: 0.75rem 0.8rem;
+  width: 100%;
+}
+
+.field select {
+  appearance: none;
+  padding-right: 2.4rem;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) 50%, calc(100% - 0.8rem) 50%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.field textarea {
+  resize: vertical;
 }
 
 .field input:focus,
-.field textarea:focus {
+.field textarea:focus,
+.field select:focus {
   outline: 2px solid var(--butter);
   outline-offset: 2px;
 }
@@ -567,11 +596,46 @@ a {
   gap: 1rem;
 }
 
+.contact-email {
+  margin-right: 1rem;
+}
+
 .photo-credit {
   display: inline-block;
   margin-top: 0.35rem;
   font-size: 0.8rem;
   opacity: 0.75;
+}
+
+html[data-preview="false"] .preview-only {
+  display: none;
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.page-narrow {
+  padding: 5rem 0;
+}
+
+.fine-print {
+  font-size: 0.9rem;
+  color: #d7e3d6;
+}
+
+.fine-print a,
+.site-footer a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.privacy-copy {
+  max-width: 40rem;
 }
 
 @media (min-width: 800px) {

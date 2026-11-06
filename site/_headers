@@ -1,0 +1,15 @@
+# Used if the site is served through Cloudflare Pages.
+# GitHub Pages ignores this file. For GitHub Pages + Cloudflare DNS,
+# set the same headers as Transform Rules (see docs/prod.md).
+# Keep this CSP in sync with the <meta> CSP in index.html. Browsers enforce
+# BOTH, so anything missing from either one is blocked. If you add the
+# hCaptcha widget, add https://hcaptcha.com https://*.hcaptcha.com to
+# script-src, style-src, connect-src and frame-src in both places.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.web3forms.com https://cloudflareinsights.com https://static.cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; upgrade-insecure-requests
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Permitted-Cross-Domain-Policies: none
